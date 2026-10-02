@@ -26,7 +26,7 @@ excludes the remaining cyclic case, and a complete formal verification in Lean 4
 5. The `LL/RR` block has six possible configurations; in each one the mixed orbits are classified by hand, and
    one row of `C` gets an impossible sum of squares.
 
-Steps 3–5 as written here are the contribution of this paper (step 3 has precedents, credited in the paper); the paper states precisely what is taken from earlier work.
+Steps 4–5 are the contribution of this paper; the paper states precisely what is taken from earlier work.
 
 ## Status
 
