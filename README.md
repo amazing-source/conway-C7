@@ -10,7 +10,7 @@ excludes the remaining cyclic case, and a complete formal verification in Lean 4
 
 | path | content |
 |---|---|
-| [`order7.pdf`](order7.pdf), [`tex/order7.tex`](tex/order7.tex) | the manuscript (D. Djematene, 14 pages) |
+| [`order7.pdf`](order7.pdf), [`tex/order7.tex`](tex/order7.tex) | the manuscript (ChatGPT and Claude, directed by Dilan Djematene; 14 pages) |
 | [`lean/`](lean) | the Lean 4 formalization; [`lean/Challenge.lean`](lean/Challenge.lean) is the statement, [`lean/README.md`](lean/README.md) the details |
 | [`checks/`](checks) | independent exact-arithmetic sanity checks of the finite steps (not part of the proof) |
 | [`scripts/`](scripts) | the exact checks of the first draft, including `fullsearch.c` (brute force over the symmetric 12×12 matrices with entries in 0..4 satisfying the quotient identities, without the Gram reasoning) |
@@ -36,6 +36,6 @@ Steps 4–5 are new; the paper states precisely what is taken from earlier work.
   lean4lean, nanoda, con-leche, con-ron); logs in `lean/logs/`. The
   workflow `.github/workflows/lean-verify.yml` rebuilds everything on a clean Linux machine and runs
   `lake comparator` inside its sandbox, then `lake comparator --paranoid` (five more independent checkers).
-* **History:** the strategy (zero diagonal, rank-4 Gram compression, case analysis) first appeared in a
-  candidate argument produced with ChatGPT; it was audited, completed and rewritten with Claude, which also wrote
-  the formalization. See the paper for details.
+* **Authorship:** written by ChatGPT (OpenAI) and Claude (Opus 5.5, Anthropic), directed by Dilan Djematene
+  (dilandjematene@gmail.com). ChatGPT found the strategy (zero diagonal, rank-4 Gram compression, case analysis);
+  Claude audited and completed it, wrote every finite step by hand, wrote the manuscript and the Lean formalization.
