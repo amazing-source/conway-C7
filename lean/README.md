@@ -39,7 +39,9 @@ Your solution is okay!
 
 On GitHub, `.github/workflows/lean-verify.yml` repeats all of this on a clean Linux machine, with
 `lake comparator` inside its `bwrap` sandbox (the sandbox does not exist on Windows).
-`lake comparator --paranoid` (five more independent checkers) has not been run yet.
+`lake comparator --inadvisably-no-sandbox --paranoid` (same machine, 19 minutes): the five other checkers
+bundled with Lean (`leanchecker-paranoid`, `lean4lean`, `nanoda`, `con-leche`, `con-ron`) also accept
+the solution; `lean4lean` checked 34354 declarations (`logs/comparator_paranoid.log`).
 
 ## Files (paper sections in brackets)
 

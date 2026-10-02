@@ -875,7 +875,9 @@ adjacency matrix on $\{0,\dots,98\}$, with the counts given by \texttt{List.coun
 same formulas with $(21,10,5,4)$ in place of $(99,14,1,2)$ are proved false, using the triangular graph $T(7)$ and
 its automorphism of order~$7$. The tool \texttt{lake comparator} checks that the proofs prove exactly these
 statements, that they use only the axioms \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}, and
-that Lean's kernel accepts them.
+that Lean's kernel accepts them. With the option \texttt{--paranoid}, five further checkers bundled with Lean
+(\texttt{leanchecker-paranoid}, \texttt{lean4lean}, \texttt{nanoda}, \texttt{con-leche} and \texttt{con-ron}),
+which re-check every declaration down to Lean's core, accept them as well.
 
 The formal proof follows \cref{sec:orbits,sec:quotient,sec:spectral}: \cref{lem:fixed}, the relabelling of the
 $98$ non-fixed vertices, the identities of \cref{prop:C} and \cref{lem:rational}. For the zero diagonal it uses
