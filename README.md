@@ -32,7 +32,8 @@ Steps 4–5 are new; the paper states precisely what is taken from earlier work.
 
 * **Paper:** complete, all finite steps by hand, independently audited; not yet refereed.
 * **Lean:** no `sorry`, axioms `propext, Classical.choice, Quot.sound` only. `lake comparator` (statement in
-  `lean/Challenge.lean`, proofs in `lean/Solution.lean`) accepts the proofs; logs in `lean/logs/`. The
+  `lean/Challenge.lean`, proofs in `lean/Solution.lean`) accepts the proofs, and so do the five other checkers bundled with Lean (`--paranoid`: leanchecker-paranoid,
+  lean4lean, nanoda, con-leche, con-ron); logs in `lean/logs/`. The
   workflow `.github/workflows/lean-verify.yml` rebuilds everything on a clean Linux machine and runs
   `lake comparator` inside its sandbox, then `lake comparator --paranoid` (five more independent checkers).
 * **History:** the strategy (zero diagonal, rank-4 Gram compression, case analysis) first appeared in a

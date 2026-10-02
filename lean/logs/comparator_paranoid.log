@@ -1,0 +1,71 @@
+# lake comparator --inadvisably-no-sandbox --paranoid, original machine (Windows 11), 2026-10-02 13:25-13:44.
+# Lean warnings removed; the checker section is complete (lean4lean lines are timings in ms).
+WARNING: Sandbox disabled, this run is not trustworthy.
+Resolving dependencies
+Building Challenge
+Build completed successfully (1368 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Conway99.srg99_aut_pow_seven, Conway99.srg99_no_orderOf_seven, Conway99.srg99_seven_not_dvd_card_aut, Conway99.srg99_elementary, Conway99.srg21_aut_pow_seven_false, Conway99.srg21_group_forms_false, Conway99.srg21_elementary_false, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Challenge
+Building Solution
+Build completed successfully (2844 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, Conway99.srg99_aut_pow_seven, Conway99.srg99_no_orderOf_seven, Conway99.srg99_seven_not_dvd_card_aut, Conway99.srg99_elementary, Conway99.srg21_aut_pow_seven_false, Conway99.srg21_group_forms_false, Conway99.srg21_elementary_false, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from Solution
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+[anonymous]:thmDecl Conway7.pred_b19_all._proof_1_1: lean4lean took 4767
+[anonymous]:thmDecl Conway7.pred_b6_all._proof_1_1: lean4lean took 4635
+[anonymous]:thmDecl Conway7.pred_b17_all._proof_1_1: lean4lean took 5580
+[anonymous]:thmDecl Conway7.pred_b1_all._proof_1_1: lean4lean took 4766
+[anonymous]:thmDecl Conway7.pred_b8_all._proof_1_1: lean4lean took 4683
+[anonymous]:thmDecl Conway7.pred_b10_all._proof_1_1: lean4lean took 5263
+[anonymous]:thmDecl Conway7.pred_b9_all._proof_1_1: lean4lean took 5426
+[anonymous]:thmDecl Conway7.pred_b18_all._proof_1_1: lean4lean took 5276
+[anonymous]:thmDecl Conway7.pred_b11_all._proof_1_1: lean4lean took 4564
+[anonymous]:thmDecl Conway7.pred_b4_all._proof_1_1: lean4lean took 5151
+[anonymous]:thmDecl Conway7.pred_b2_all._proof_1_1: lean4lean took 5244
+[anonymous]:thmDecl Conway7.pred_b7_all._proof_1_1: lean4lean took 5268
+[anonymous]:thmDecl Conway7.pred_b0_all._proof_1_1: lean4lean took 5229
+[anonymous]:thmDecl Conway7.pred_b16_all._proof_1_1: lean4lean took 5411
+[anonymous]:thmDecl Conway7.pred_b15_all._proof_1_1: lean4lean took 5378
+[anonymous]:thmDecl Conway7.pred_b20_all._proof_1_1: lean4lean took 5394
+[anonymous]:thmDecl Conway7.pred_b5_all._proof_1_1: lean4lean took 5439
+[anonymous]:thmDecl Conway7.pred_b13_all._proof_1_1: lean4lean took 5366
+[anonymous]:thmDecl Conway7.pred_b14_all._proof_1_1: lean4lean took 4733
+[anonymous]:thmDecl Conway7.pred_b12_all._proof_1_1: lean4lean took 4751
+[anonymous]:thmDecl Conway7.pred_b3_all._proof_1_1: lean4lean took 4932
+[anonymous]:thmDecl Conway7.predR_h3_all._proof_1_1: lean4lean took 1690
+[anonymous]:thmDecl Conway99.tri7_adj._proof_1_1: lean4lean took 1933
+[anonymous]:thmDecl Conway99.tri7_nonadj._proof_1_1: lean4lean took 2065
+[anonymous]:thmDecl Conway7.pred_b25_all._proof_1_1: lean4lean took 4847
+[anonymous]:thmDecl Conway7.pred_b27_all._proof_1_1: lean4lean took 5538
+[anonymous]:thmDecl Conway7.pred_b26_all._proof_1_1: lean4lean took 4747
+[anonymous]:thmDecl Conway7.pred_b23_all._proof_1_1: lean4lean took 5126
+[anonymous]:thmDecl Conway7.pred_b28_all._proof_1_1: lean4lean took 5575
+[anonymous]:thmDecl Conway7.census_113_122: lean4lean took 4250
+[anonymous]:thmDecl Conway7.pred_b24_all._proof_1_1: lean4lean took 5174
+[anonymous]:thmDecl Conway7.census_113_113: lean4lean took 3412
+[anonymous]:thmDecl Conway7.census_122_122: lean4lean took 5098
+[anonymous]:thmDecl Conway7.census_122_113: lean4lean took 4593
+[anonymous]:thmDecl Conway7.pred_b21_all._proof_1_1: lean4lean took 5007
+[anonymous]:thmDecl Conway7.pred_b22_all._proof_1_1: lean4lean took 4977
+[anonymous]:thmDecl Conway7.census_112_112: lean4lean took 4721
+checked 34354 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: 1 inductive blocks modelled in-process: Lean.Syntax (30 generated records, checked by the fold as declarations and not counted as records of the file)
+con-leche: 2 declarations hoisted ahead of the pinned Nat operations they ground: Nat.mul._f, Nat.mul
+con-leche: accepted 34353 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: 1 inductive blocks modelled in-process: Lean.Syntax (30 generated records, checked by the fold as declarations and not counted as records of the file)
+con-ron: 2 declarations hoisted ahead of the pinned Nat operations they ground: Nat.mul._f, Nat.mul
+con-ron: accepted 34353 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+real	19m9.178s
+user	0m0.015s
+sys	0m0.000s
+EXIT=0
