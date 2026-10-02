@@ -1,9 +1,4 @@
-import Ordre7.Gen.Census_111_111
-import Ordre7.Gen.Census_112_112
-import Ordre7.Gen.Census_113_113
-import Ordre7.Gen.Census_113_122
-import Ordre7.Gen.Census_122_113
-import Ordre7.Gen.Census_122_122
+import Conway7.Gen.Census
 
 /-!
 # The core matrix theorem
@@ -18,7 +13,7 @@ treat the six canonical pairs.
 
 open Matrix Finset
 
-namespace Ordre7
+namespace Conway7
 
 variable {C : Matrix (Fin 12) (Fin 12) ℤ}
 
@@ -123,4 +118,4 @@ theorem no_orbit_matrix (C : Matrix (Fin 12) (Fin 12) ℤ) : ¬ IsOrbitMatrix C 
   · exact reduceQ_122 (hC.perm (Equiv.swap 0 2) (by decide)) (by swapfact hC) (by swapfact hC)
       (by swapfact hC)
 
-end Ordre7
+end Conway7

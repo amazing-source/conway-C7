@@ -1,0 +1,64 @@
+name: Lean verification (comparator)
+
+# Rebuilds the formalisation from this repository on a clean Linux machine, then runs
+# `lake comparator` inside its bwrap sandbox: the theorems of lean/Solution.lean must have exactly
+# the statements of lean/Challenge.lean (which imports only Mathlib), use only the axioms propext,
+# Quot.sound and Classical.choice, and be accepted by Lean's kernel. The `--paranoid` step adds the
+# five independent checkers bundled with Lean (leanchecker-paranoid, lean4lean, nanoda, con-leche,
+# con-ron). The sandbox is Linux-only, which is why this runs here.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'lean/**'
+      - '.github/workflows/lean-verify.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    defaults:
+      run:
+        working-directory: lean
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install elan (the Lean version comes from lean/lean-toolchain)
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -o elan-init.sh
+          sh elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Install bubblewrap (the sandbox of lake comparator)
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q bubblewrap
+          # Ubuntu 24.04 forbids unprivileged user namespaces by default; bwrap needs them.
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: Machine
+        run: |
+          nproc
+          free -g
+          df -h .
+
+      - name: Mathlib cache
+        run: lake exe cache get
+
+      - name: Build Conway7, Challenge and Solution
+        run: lake build Conway7 Challenge Solution
+
+      - name: Axioms of the intermediate statements (Check.lean)
+        run: lake env lean Check.lean
+
+      # The verdict: same statements as Challenge.lean, standard axioms only, Lean's kernel accepts.
+      - name: lake comparator (sandboxed)
+        run: /usr/bin/time -v lake comparator
+
+      # The five other checkers bundled with Lean. Reported separately: con-leche needs more memory
+      # than some machines have, and a checker that runs out of memory gives no verdict either way.
+      - name: lake comparator --paranoid (sandboxed, five more checkers)
+        continue-on-error: true
+        run: /usr/bin/time -v lake comparator --paranoid

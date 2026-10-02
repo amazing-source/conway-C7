@@ -1,4 +1,4 @@
-import Ordre7.Imports
+import Conway7.Imports
 
 /-!
 # The exterior quotient matrix of an order-7 automorphism: basic algebra
@@ -16,7 +16,7 @@ We prove the general tools used in the case analysis:
 
 open Matrix Finset
 
-namespace Ordre7
+namespace Conway7
 
 /-- The sign vector `u = (1,1,1,-1,-1,-1,0,0,0,0,0,0)`. -/
 def u : Fin 12 → ℤ := ![1, 1, 1, -1, -1, -1, 0, 0, 0, 0, 0, 0]
@@ -373,4 +373,4 @@ lemma perm (hC : IsOrbitMatrix C) (σ : Equiv.Perm (Fin 12)) (hσ : ∀ i, u (σ
 
 end IsOrbitMatrix
 
-end Ordre7
+end Conway7
