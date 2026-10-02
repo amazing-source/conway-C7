@@ -1,4 +1,4 @@
-import Ordre7.Basic
+import Conway7.Basic
 import Mathlib.Data.Matrix.Basic
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
@@ -13,7 +13,7 @@ import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
 open Matrix Finset
 
-namespace Ordre7
+namespace Conway7
 
 /-- the integer combination `∑ c_i e_{k_i}` -/
 def comb {n : ℕ} (e : Fin n → Fin 12) (c : Fin n → ℤ) : Fin 12 → ℤ :=
@@ -169,4 +169,4 @@ lemma hQ_eq : C 3 4 + C 3 5 + C 4 5 = C 0 1 + C 0 2 + C 1 2 := by
 
 end IsOrbitMatrix
 
-end Ordre7
+end Conway7

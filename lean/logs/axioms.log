@@ -1,0 +1,5 @@
+'Conway7.no_order7' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Conway7.no_orbit_matrix' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Conway7.unique_fixed' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Conway7.Setting.spectral' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Conway7.six_dvd_of_pow_seven' depends on axioms: [propext, Classical.choice, Quot.sound]

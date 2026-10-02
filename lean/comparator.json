@@ -1,0 +1,15 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "Conway99.srg99_aut_pow_seven",
+    "Conway99.srg99_no_orderOf_seven",
+    "Conway99.srg99_seven_not_dvd_card_aut",
+    "Conway99.srg99_elementary",
+    "Conway99.srg21_aut_pow_seven_false",
+    "Conway99.srg21_group_forms_false",
+    "Conway99.srg21_elementary_false"
+  ],
+  "definition_names": [],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]
+}
