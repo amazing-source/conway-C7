@@ -1,0 +1,661 @@
+\documentclass[11pt,a4paper]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[margin=2.6cm]{geometry}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=green!40!black,urlcolor=blue!50!black]{hyperref}
+\usepackage[capitalise,nameinlink]{cleveref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\rk}{\operatorname{rank}}
+\newcommand{\Fix}{\operatorname{Fix}}
+\DeclareMathOperator{\Aut}{Aut}
+
+\title{A computer-free exclusion of automorphisms of order~$7$\\ in a putative $\mathrm{srg}(99,14,1,2)$}
+\author{conway99-structures-lab}
+\date{2 October 2026 (draft)}
+
+\begin{document}
+
+\begin{abstract}
+We prove that a strongly regular graph with parameters $(99,14,1,2)$ (a \emph{Conway $99$-graph})
+has no automorphism of order~$7$. Together with the computer-free reduction of Cesarz and Woldar,
+this shows without computer assistance that the order of the automorphism group of such a graph is not
+divisible by~$7$; previously this was known through the orbit-matrix computations of Behbahani and Lam.
+An automorphism of order $7$ yields a symmetric nonnegative integral $12\times12$ matrix $C$
+(the exterior orbit quotient) satisfying $C^2+C=12I+12J-2uu^{\mathsf T}$, $C\one=12\one$, $Cu=0$.
+A rational-representation argument forces $C$ to have zero diagonal. Then $G=3C+12I-4J-2uu^{\mathsf T}$
+is $21$ times a projection of rank~$4$, so $C$ is encoded by twelve vectors in $\R^4$. A short case
+analysis, carried out entirely by hand, shows that such vectors cannot exist.
+\end{abstract}
+
+\maketitle
+
+\noindent\textbf{Status.} The strategy (exterior quotient matrix, trace argument, rank-$4$ Gram compression,
+case analysis on the $LL/RR$ block) comes from a candidate proof that an AI system (ChatGPT) produced on
+2~October 2026. This text re-derives every step. It replaces the computer-assisted finite checks of that
+candidate with hand derivations (\cref{sec:block,sec:mixed}) and adds independent exact verifications
+(\cref{sec:verif}). A Lean~4 formalization is reported in \cref{sec:verif}.
+The argument has not yet been refereed.
+
+\section{Introduction}
+
+Conway asked whether a strongly regular graph with parameters $(99,14,1,2)$ exists: a graph on $99$
+vertices in which every edge lies in exactly one triangle and every non-edge is a diagonal of exactly one
+quadrilateral~\cite{Conway}. The question is open. A standard line of attack is to constrain the
+automorphism group of a putative example. Behbahani and Lam~\cite{BL} used orbit matrices, with
+computer assistance, to rule out automorphisms of several prime orders, including~$7$. Cesarz and
+Woldar~\cite{CW} gave computer-free proofs that if $7$ divides $|\Aut\Gamma|$ then $\Aut\Gamma\cong\Z_7$,
+and that if $2$ divides $|\Aut\Gamma|$ then $|\Aut\Gamma|$ divides~$6$. The present note completes the
+computer-free picture for the prime~$7$.
+
+\begin{theorem}\label{thm:main}
+If $\Gamma$ is a strongly regular graph with parameters $(99,14,1,2)$, then $\Gamma$ has no automorphism of
+order~$7$. Consequently $7\nmid|\Aut\Gamma|$.
+\end{theorem}
+
+The proof only uses the existence of a single automorphism $s$ of order~$7$. It does not use the structure
+of the full automorphism group. We reprove the orbit lemma (\cref{lem:fixed}) instead of quoting it.
+
+\medskip\noindent\textbf{Plan.}
+\Cref{sec:prelim} recalls the local structure of $\Gamma$. \Cref{sec:orbits} describes the orbits of~$s$,
+and \cref{sec:quotient} derives the matrix equations for the exterior quotient~$C$. \Cref{sec:spectral}
+shows $C$ has zero diagonal (the only representation-theoretic input). \Cref{sec:gram} introduces the
+rank-$4$ Gram vectors. \Cref{sec:block} classifies the $6\times6$ block of $C$ on the $LL$ and $RR$ orbits
+(six cases), and \cref{sec:mixed} kills each case using the mixed orbits.
+
+\section{Preliminaries}\label{sec:prelim}
+
+Let $\Gamma=(V,E)$ be an $\mathrm{srg}(99,14,1,2)$ with adjacency matrix~$A$, and write $J$ for the all-ones
+matrix. Then $A^2=14I+A+2(J-I-A)$, that is,
+\begin{equation}\label{eq:srg}
+A^2+A=12I+2J .
+\end{equation}
+The eigenvalues are $14$ (on $\one$) and the roots $3,-4$ of $X^2+X-12$. Their multiplicities $f,g$
+satisfy $f+g=98$ and $14+3f-4g=\tr A=0$, so the spectrum is $14^1\,3^{54}\,(-4)^{44}$.
+
+For a vertex $x$ write $\Gamma(x)$ for its neighbourhood and $\Gamma_2(x)=V\setminus(\{x\}\cup\Gamma(x))$
+($|\Gamma_2(x)|=84$).
+
+\begin{lemma}[local structure]\label{lem:local}
+Let $x\in V$.
+\begin{enumerate}[label=(\alph*)]
+\item $\Gamma(x)$ induces a perfect matching $7K_2$. For $a\in\Gamma(x)$ write $a'$ for its partner.
+\item Every $y\in\Gamma_2(x)$ has exactly two neighbours in $\Gamma(x)$, and they are non-adjacent.
+\item The map $y\mapsto\Gamma(y)\cap\Gamma(x)$ is a bijection from $\Gamma_2(x)$ onto the $84$
+non-adjacent pairs of $\Gamma(x)$.
+\item Every vertex of $\Gamma(x)$ has $12$ neighbours in $\Gamma_2(x)$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) Since $\lambda=1$, every $a\in\Gamma(x)$ has exactly one neighbour in $\Gamma(x)$.
+(b) Since $\mu=2$, $y$ has exactly two neighbours $a,b\in\Gamma(x)$. If $a\sim b$, then $a,b$ would have the
+two common neighbours $x,y$, contradicting $\lambda=1$.
+(c) Let $a,b\in\Gamma(x)$ be non-adjacent. They have $\mu=2$ common neighbours, one of which is~$x$. The
+other is not in $\Gamma(x)$, because the only neighbour of $a$ in $\Gamma(x)$ is $a'$, and $a'\ne b'$.
+So exactly one $y\in\Gamma_2(x)$ is adjacent to both. Together with~(b) this gives the bijection, and
+$\binom{14}{2}-7=84=|\Gamma_2(x)|$.
+(d) $14-1-1=12$.
+\end{proof}
+
+\section{The orbits of an automorphism of order 7}\label{sec:orbits}
+
+From now on $s\in\Aut\Gamma$ has order~$7$. Every orbit of $\langle s\rangle$ has size $1$ or~$7$.
+
+\begin{lemma}[cf.~\cite{CW}]\label{lem:fixed}
+$s$ fixes exactly one vertex~$x$, and $s$ fixes no vertex of $\Gamma(x)$ or of $\Gamma_2(x)$.
+\end{lemma}
+
+\begin{proof}
+Since $99\equiv1\pmod 7$, the number of fixed vertices is $\equiv1\pmod7$; in particular some vertex $x$ is
+fixed. The set $F$ of fixed vertices in $\Gamma(x)$ is closed under $a\mapsto a'$ (the partner is defined
+in terms of $x$ and $a$), and $|F|\equiv|\Gamma(x)|=14\equiv0\pmod7$. So $|F|\in\{0,14\}$, as $|F|$ is
+even. If $|F|=14$, every $y\in\Gamma_2(x)$ is fixed, because by \cref{lem:local}(c) it is determined by
+its two (fixed) neighbours in $\Gamma(x)$. Then $s=1$, a contradiction. Hence $F=\emptyset$.
+
+If $y\in\Gamma_2(x)$ were fixed, $s$ would fix its two-element set $\Gamma(y)\cap\Gamma(x)$ setwise. Since
+$s$ has odd order, it would fix both points, which contradicts $F=\emptyset$. Every vertex is at distance
+at most~$2$ from $x$, so $x$ is the only fixed vertex.
+\end{proof}
+
+\begin{lemma}\label{lem:labels}
+The vertices of $\Gamma(x)$ can be labelled $\ell_i,r_i$ ($i\in\Z/7$) so that $\ell_i\sim r_i$,
+$s(\ell_i)=\ell_{i+1}$ and $s(r_i)=r_{i+1}$.
+\end{lemma}
+
+\begin{proof}
+$s$ permutes the seven matching edges of $\Gamma(x)$. If $s$ fixed an edge $\{a,a'\}$ setwise, then $s^2$
+would fix $a$, hence so would $s=(s^2)^4$; this is impossible. So the matching edges form a single
+$\langle s\rangle$-orbit. Choose $\ell_0\in\Gamma(x)$, put $\ell_i=s^i(\ell_0)$ and $r_i=\ell_i'$. Then
+$s(r_i)=s(\ell_i)'=r_{i+1}$. The edges $\{\ell_i,r_i\}=s^i\{\ell_0,r_0\}$ are the seven distinct matching
+edges, so the $14$ labels are distinct.
+\end{proof}
+
+Write $L=\{\ell_i\}$ and $R=\{r_i\}$. By \cref{lem:local}(c), each $y\in\Gamma_2(x)$ is labelled by a
+non-adjacent pair of $\Gamma(x)$, and $s$ acts on labels through $i\mapsto i+1$. The exterior
+$\Gamma_2(x)$ therefore splits into twelve orbits of size~$7$:
+\begin{itemize}
+\item three \emph{$LL$-orbits} (labels $\{\ell_i,\ell_{i+\delta}\}$, $\delta=1,2,3$), forming the set $\cA$;
+\item three \emph{$RR$-orbits} (labels $\{r_i,r_{i+\delta}\}$, $\delta=1,2,3$), forming the set $\cB$;
+\item six \emph{mixed orbits} (labels $\{\ell_i,r_{i+\delta}\}$, $\delta=1,\dots,6$), forming the set $\cM$.
+\end{itemize}
+For an exterior orbit $O$ put $u_O=1,-1,0$ according as $O\in\cA,\cB,\cM$. A vertex of $O$ then has
+$1+u_O$ neighbours in $L$ and $1-u_O$ neighbours in $R$.
+
+\section{The exterior quotient matrix}\label{sec:quotient}
+
+For exterior orbits $O,O'$ let $C_{OO'}$ be the number of neighbours in $O'$ of a vertex $y\in O$. This does
+not depend on $y\in O$, because $s$ is an automorphism. Order the orbits as $\cA,\cB,\cM$, so that
+\[
+u=(1,1,1,-1,-1,-1,0,0,0,0,0,0)^{\mathsf T}.
+\]
+
+\begin{proposition}\label{prop:C}
+$C$ is a symmetric $12\times12$ matrix with nonnegative integer entries, and
+\begin{align}
+C\one&=12\,\one,\label{eq:C1}\\
+Cu&=0,\label{eq:Cu}\\
+C^2+C&=12I+12J-2uu^{\mathsf T}.\label{eq:C2}
+\end{align}
+\end{proposition}
+
+\begin{proof}
+Symmetry holds because both $7C_{OO'}$ and $7C_{O'O}$ count the edges between $O$ and $O'$. For
+\eqref{eq:C1}: a vertex $y\in\Gamma_2(x)$ has $14$ neighbours, two of them in $\Gamma(x)$
+(\cref{lem:local}) and none equal to~$x$. A vertex of $L$ has exactly $1+u_{O'}$ neighbours in $O'$,
+since both counts equal $1/7$ of the number of edges between $L$ and $O'$; likewise $1-u_{O'}$ for $R$.
+
+Fix $y\in O$ and count the walks $y\to w\to z$ with $z$ in a fixed set $Z$. Grouping by $z$ gives
+$\sum_{z\in Z}|\Gamma(y)\cap\Gamma(z)|$, and $|\Gamma(y)\cap\Gamma(z)|$ is $14,1,2$ according as
+$z=y$, $z\sim y$, or neither. Grouping by $w$ gives $\sum_{w\sim y}|\Gamma(w)\cap Z|$.
+
+For $Z=O'$ the first count is $14[O{=}O']+C_{OO'}+2(7-[O{=}O']-C_{OO'})=12[O{=}O']+14-C_{OO'}$. The
+second is
+\[
+(1+u_O)(1+u_{O'})+(1-u_O)(1-u_{O'})+\sum_{O''}C_{OO''}C_{O''O'}=2+2u_Ou_{O'}+(C^2)_{OO'}.
+\]
+Equating the two gives \eqref{eq:C2}.
+
+For $Z=L$ the first count is $(1+u_O)+2(6-u_O)=13-u_O$. In the second, neighbours $w\in L$ contribute
+$0$, since $L$ is independent. Neighbours $w\in R$ contribute $(1-u_O)\cdot1$. Exterior neighbours
+contribute $\sum_{O''}C_{OO''}(1+u_{O''})=12+(Cu)_O$. Hence $(Cu)_O=0$.
+\end{proof}
+
+Taking diagonal entries in \eqref{eq:C2}:
+\begin{equation}\label{eq:diag}
+\sum_j C_{ij}^2+C_{ii}=24-2u_i^2 .
+\end{equation}
+
+\begin{lemma}[spectrum of $C$]\label{lem:specC}
+$C\one=12\one$ and $Cu=0$. On $W:=\langle\one,u\rangle^{\perp}$, which is $C$-invariant and of
+dimension~$10$, the only eigenvalues of $C$ are $3$ and $-4$. If $a$ denotes the multiplicity of $3$ on
+$W$, then $\tr C=7a-28$.
+\end{lemma}
+
+\begin{proof}
+$W$ is invariant because $C$ is symmetric and $\one,u$ are eigenvectors. For $w\in W$, \eqref{eq:C2} gives
+$(C^2+C)w=12w$, so the eigenvalues there are roots of $X^2+X-12$. Finally
+$\tr C=12+0+3a-4(10-a)$.
+\end{proof}
+
+\section{The spectral input: $C$ has zero diagonal}\label{sec:spectral}
+
+\begin{lemma}\label{lem:rational}
+Let $E$ be a finite-dimensional $\Q$-vector space and $T\in\mathrm{GL}(E)$ with $T^7=1$. Then
+$\dim E-\dim\ker(T-1)\equiv0\pmod6$.
+\end{lemma}
+
+\begin{proof}
+$X^7-1=(X-1)\Phi_7(X)$ with coprime factors, so $E=\ker(T-1)\oplus E'$ with $E'=\ker\Phi_7(T)$. The
+polynomial $\Phi_7$ is irreducible over $\Q$ (Eisenstein at $7$ after $X\mapsto X+1$). Hence
+$K=\Q[X]/(\Phi_7)$ is a field of degree $6$, and $E'$ is a $K$-vector space with $X$ acting as~$T$.
+Therefore $\dim_\Q E'=6\dim_K E'$.
+\end{proof}
+
+\begin{proposition}\label{prop:zerodiag}
+$\tr C=0$. Hence $C_{ii}=0$ for all $i$, and
+\begin{equation}\label{eq:rows}
+\sum_j C_{ij}=12,\qquad \sum_j C_{ij}^2=\begin{cases}22,& i\in\cA\cup\cB,\\ 24,& i\in\cM.\end{cases}
+\end{equation}
+In particular every entry of $C$ is at most~$4$.
+\end{proposition}
+
+\begin{proof}
+Let $P$ be the permutation matrix of~$s$, and let $F=\{f\in\R^V: Pf=f\}$, the span of the $15$ orbit
+indicators. Since $A$ commutes with $P$, $A$ preserves $F$. In the basis of orbit indicators, $A|_F$ has
+matrix $B$, where $B_{OO'}$ is the number of neighbours in $O'$ of a vertex of~$O$. Its diagonal
+entries are $0$ for $\{x\}$, $L$ and $R$ ($L$ and $R$ are independent sets), so $\tr(A|_F)=\tr C$.
+
+$A|_F$ is self-adjoint, hence diagonalizable, with eigenvalues among $14,3,-4$. The eigenvalue $14$ has
+multiplicity $1$, because $\one\in F$. Let $d=\dim(F\cap E_3)$, where $E_3=\ker(A-3I)$. Then $-4$ has
+multiplicity $14-d$, and
+\[
+\tr C=\tr(A|_F)=14+3d-4(14-d)=7d-42 .
+\]
+$A$ and $P$ are rational matrices, so $E_3$ has a rational form $E_{3,\Q}=\ker_{\Q}(A-3I)$ of
+$\Q$-dimension~$54$. It is $P$-invariant, and $\ker(P-1)\cap E_{3,\Q}$ has $\Q$-dimension~$d$. By
+\cref{lem:rational}, $54-d\equiv0\pmod 6$. Since $0\le d\le14$, $d\in\{0,6,12\}$.
+
+If $d=0$ then $\tr C=-42<0$, which is impossible. If $d=12$ then $\tr C=42$, and \cref{lem:specC} gives
+$a=10$. So $C$ acts as $3$ on all of $W$:
+\[
+C=12\cdot\tfrac{1}{12}J+0\cdot\tfrac16uu^{\mathsf T}+3\bigl(I-\tfrac1{12}J-\tfrac16uu^{\mathsf T}\bigr)
+=3I+\tfrac34J-\tfrac12uu^{\mathsf T}.
+\]
+Then $C_{mm'}=3/4$ for distinct $m,m'\in\cM$, which is not an integer. Hence $d=6$ and $\tr C=0$.
+Since $C\ge0$ entrywise, the diagonal vanishes, and \eqref{eq:rows} follows from \eqref{eq:C1} and
+\eqref{eq:diag}.
+\end{proof}
+
+From now on $a=d-2=4$.
+
+\section{Gram compression}\label{sec:gram}
+
+Put
+\begin{equation}\label{eq:G}
+G=3C+12I-4J-2uu^{\mathsf T}.
+\end{equation}
+$G$ vanishes on $\one$ and $u$; on $W$ it is $3\cdot3+12=21$ on the $3$-eigenspace of $C$ and
+$3\cdot(-4)+12=0$ on the $(-4)$-eigenspace. So $G$ is $21$ times the orthogonal projection onto a
+$4$-dimensional space:
+\begin{equation}\label{eq:Gproj}
+G\succeq0,\qquad G^2=21G,\qquad \rk G=4 .
+\end{equation}
+Hence there are vectors $v_1,\dots,v_{12}\in\R^4$ spanning $\R^4$ with $G_{ij}=v_i\cdot v_j$. Explicitly,
+\begin{equation}\label{eq:ip}
+|v_i|^2=\begin{cases}6,&i\in\cA\cup\cB\\8,&i\in\cM\end{cases}\qquad
+v_i\cdot v_j=\begin{cases}3C_{ij}-6,&i,j\in\cA\text{ or }i,j\in\cB,\\
+3C_{ij}-2,&i\in\cA,\ j\in\cB,\\
+3C_{ij}-4,&i\text{ or }j\in\cM\end{cases}\quad(i\ne j).
+\end{equation}
+Moreover $G\one=0$ and $Gu=0$ translate into
+\begin{equation}\label{eq:sums}
+\sum_{i}v_i=0,\qquad \sum_{a\in\cA}v_a=\sum_{b\in\cB}v_b .
+\end{equation}
+
+Write $\cA=\{a_1,a_2,a_3\}$ and $\cB=\{b_1,b_2,b_3\}$. Let $P=(C_{a_ia_j})$, $Q=(C_{b_ib_j})$ and
+$R=(C_{a_ib_j})$ be the $3\times3$ blocks. For $a\in\cA$, row $a$ of \eqref{eq:Cu} says
+$\sum_{a'\in\cA}C_{aa'}=\sum_{b\in\cB}C_{ab}=:\sigma_a$; that is,
+\begin{equation}\label{eq:margins}
+P\one=R\one,\qquad Q\one=R^{\mathsf T}\one .
+\end{equation}
+In particular the three \emph{edge weights} of $P$ and of $Q$ have the same sum, which we call~$h$.
+
+\section{The \texorpdfstring{$LL/RR$}{LL/RR} block}\label{sec:block}
+
+\begin{lemma}\label{lem:nozero}
+$C_{aa'}\ge1$ for distinct $a,a'\in\cA$, and likewise in~$\cB$.
+\end{lemma}
+
+\begin{proof}
+If $C_{aa'}=0$ then $|v_a+v_{a'}|^2=6+6-12=0$, so $v_{a'}=-v_a$. For $b\in\cB$ this gives
+$(3C_{ab}-2)+(3C_{a'b}-2)=0$, i.e.\ $3(C_{ab}+C_{a'b})=4$, which is impossible. The same argument works
+in~$\cB$.
+\end{proof}
+
+\begin{lemma}\label{lem:h}
+$h\in\{3,4,5\}$.
+\end{lemma}
+
+\begin{proof}
+Let $e_\cA,e_\cB$ be the indicator vectors and $t=Ce_\cA$; by \eqref{eq:Cu}, $t=Ce_\cB$ as well. Then
+$\sum_{\cA}t_i=e_\cA^{\mathsf T}Ce_\cA=2h$, $\sum_{\cB}t_i=e_\cB^{\mathsf T}Ce_\cA=e_\cB^{\mathsf T}Ce_\cB=2h$,
+and $\sum_{\cM}t_i=\one^{\mathsf T}Ce_\cA-4h=36-4h$. By \eqref{eq:C2},
+\[
+|t|^2=e_\cA^{\mathsf T}C^2e_\cA=e_\cA^{\mathsf T}(12I+12J-2uu^{\mathsf T}-C)e_\cA=36+108-18-2h=126-2h .
+\]
+Applying Cauchy--Schwarz on the blocks $\cA,\cB,\cM$ (of sizes $3,3,6$) gives
+$126-2h\ge\tfrac{(2h)^2}{3}+\tfrac{(2h)^2}{3}+\tfrac{(36-4h)^2}{6}$, which simplifies to
+$(h-3)(8h-45)\le0$.
+\end{proof}
+
+By \cref{lem:nozero,lem:h}, the edge weights of $P$ (and of $Q$) form one of the multisets
+$\{1,1,1\}$ ($h=3$), $\{1,1,2\}$ ($h=4$), $\{1,1,3\}$ or $\{1,2,2\}$ ($h=5$). Relabelling $\cA$ and $\cB$
+separately, we may take $P$ and $Q$ to be one of
+\[
+T_{111}=\begin{pmatrix}0&1&1\\1&0&1\\1&1&0\end{pmatrix},\
+T_{112}=\begin{pmatrix}0&1&1\\1&0&2\\1&2&0\end{pmatrix},\
+T_{113}=\begin{pmatrix}0&1&1\\1&0&3\\1&3&0\end{pmatrix},\
+T_{122}=\begin{pmatrix}0&1&2\\1&0&2\\2&2&0\end{pmatrix}.
+\]
+
+\subsection{The case \texorpdfstring{$h=3$}{h=3}}
+
+\begin{proposition}\label{prop:h3}
+If $h=3$ then $P=Q=T_{111}$, $\sum_\cA v_a=\sum_\cB v_b=0$, and all row and column sums of $R$ equal~$2$.
+Up to relabelling, $R$ is one of
+\[
+R_1=2I,\qquad R_2=\begin{pmatrix}2&0&0\\0&1&1\\0&1&1\end{pmatrix},\qquad R_3=T_{111}.
+\]
+Moreover every mixed $m$ satisfies $\sum_{a\in\cA}C_{ma}=\sum_{b\in\cB}C_{mb}=4$.
+\end{proposition}
+
+\begin{proof}
+$|\sum_\cA v_a|^2=3\cdot6+6\cdot(-3)=0$, and similarly for $\cB$. Pairing $\sum_\cA v_a=0$ with $v_b$
+gives $\sum_a(3R_{ab}-2)=0$, so the column sums of $R$ are $2$; the row sums follow in the same way.
+Pairing with $v_m$ gives $\sum_a(3C_{ma}-4)=0$. A nonnegative integral $3\times3$ matrix with all line
+sums $2$ is a sum of two permutation matrices $\pi_1+\pi_2$, and up to row and column permutations
+$\pi_1^{-1}\pi_2$ is the identity, a transposition, or a $3$-cycle; these give $R_1,R_2,R_3$. All such
+relabellings preserve $P=Q=T_{111}$.
+\end{proof}
+
+\subsection{The cases \texorpdfstring{$h=4,5$}{h=4,5}: residuals}
+
+Now $P\in\{T_{112},T_{113},T_{122}\}$, and its Gram block $G_\cA=(v_a\cdot v_{a'})$ has
+$\det G_\cA=54\bigl(xyz-(h-4)^2\bigr)>0$, where $x,y,z$ are the edge weights. So $v_{a_1},v_{a_2},v_{a_3}$
+span a $3$-space $U\subset\R^4$. Fix a unit normal $n$ of $U$ and put $z_b=v_b\cdot n$ for $b\in\cB$.
+Write $c=(R_{a_1b},R_{a_2b},R_{a_3b})$ for the column of $R$ at $b$, and $X=3c-2\one$ for the inner
+products of $v_b$ with the $v_a$. Then
+\begin{equation}\label{eq:resid}
+z_b^2=6-X^{\mathsf T}G_\cA^{-1}X,\qquad z_{b_1}+z_{b_2}+z_{b_3}=0,
+\end{equation}
+the second identity because $\sum_\cB v_b=\sum_\cA v_a\in U$ by~\eqref{eq:sums}. The column sum of $c$
+is $\sigma_b$, the row sum of $Q$ at $b$, by~\eqref{eq:margins}. Three real numbers with zero sum have
+the largest absolute value equal to the sum of the other two. So if $\alpha_b=12z_b^2$, then
+$\sqrt{\alpha_{\max}}=\sqrt{\alpha_j}+\sqrt{\alpha_k}$ for the two others, and in particular
+$\alpha_j\alpha_k$ is a perfect square. The following tables list $\alpha=12z^2$ for every column $c$ with
+the required sum and $z^2\ge0$. They follow from \eqref{eq:resid} with
+\[
+12\,G^{-1}_{T_{112}}=\begin{pmatrix}4&2&2\\2&3&1\\2&1&3\end{pmatrix},\quad
+12\,G^{-1}_{T_{113}}=\begin{pmatrix}3&1&1\\1&3&-1\\1&-1&3\end{pmatrix},\quad
+12\,G^{-1}_{T_{122}}=\tfrac23\begin{pmatrix}4&2&0\\2&4&0\\0&0&3\end{pmatrix}.
+\]
+
+\begin{center}\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+$P$ & column sum & columns $c$ with $\alpha=12z^2$\\
+\midrule
+$T_{112}$ & $2$ & $(0,1,1)\!:64$;\ $(1,0,1),(1,1,0)\!:61$;\ $(2,0,0)\!:40$;\ $(0,0,2),(0,2,0)\!:28$\\
+          & $3$ & $(1,1,1)\!:52$;\ $(0,1,2),(0,2,1)\!:37$;\ $(1,0,2),(1,2,0)\!:16$;\ $(2,0,1),(2,1,0)\!:13$\\
+\midrule
+$T_{113}$ & $2$ & $(0,1,1)\!:64$;\ $(1,0,1),(1,1,0)\!:52$;\ $(2,0,0)\!:40$\\
+          & $3$ & $(1,1,1)\!:61$;\ $(0,1,2),(0,2,1)\!:37$;\ $(2,0,1),(2,1,0)\!:13$\\
+          & $4$ & $(0,2,2)\!:28$;\ $(1,1,2),(1,2,1)\!:16$;\ $(2,1,1)\!:4$\\
+\midrule
+$T_{122}$ & $3$ & $(1,1,1)\!:62$;\ $(0,2,1),(2,0,1)\!:38$;\ $(0,1,2),(1,0,2)\!:32$;\ $(1,2,0),(2,1,0)\!:8$\\
+          & $4$ & $(1,1,2)\!:32$;\ $(1,2,1),(2,1,1)\!:14$;\ $(0,2,2),(2,0,2)\!:8$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+Columns not listed have $z^2<0$. For $T_{112}$ and $T_{113}$ the row sums are $(\sigma_{a_1},\sigma_{a_2},\sigma_{a_3})=(2,3,3)$
+and $(2,4,4)$; for $T_{122}$ they are $(3,3,4)$, with $a_3$ the vertex of the two $2$-edges.
+
+\begin{proposition}\label{prop:h45}
+If $h\in\{4,5\}$ then $P=Q$ up to relabelling, and up to relabelling $(P,R)$ is one of
+\[
+(T_{112},T_{112}),\qquad \Bigl(T_{113},\begin{pmatrix}0&1&1\\1&1&2\\1&2&1\end{pmatrix}\Bigr),\qquad
+\Bigl(T_{122},\begin{pmatrix}0&1&2\\1&2&0\\2&0&2\end{pmatrix}\Bigr).
+\]
+\end{proposition}
+
+\begin{proof}
+We use the tables with the $\alpha$'s of the three columns.
+
+\emph{$P=Q=T_{112}$.} The column at $b_1$ has sum $\sigma_{b_1}=2$, and those at $b_2,b_3$ have sum $3$,
+so $\alpha_{b_1}\in\{64,61,40,28\}$ and $\alpha_{b_2},\alpha_{b_3}\in\{52,37,16,13\}$. For each pair of
+columns whose values have a square product, the remaining column would need the value
+$(\sqrt{\alpha_j}+\sqrt{\alpha_k})^2$. For the pair $(b_2,b_3)$ the square products are $16\cdot16$,
+$13\cdot13$, $13\cdot52$, $52\cdot52$ and $37\cdot37$, which require $\alpha_{b_1}=64,52,117,208,148$. For a
+pair $(b_1,b_j)$ the only square product is $64\cdot16$, which requires $144$. Only
+$\sqrt{16}+\sqrt{16}=\sqrt{64}$ is realized, so $\alpha=(64,16,16)$: $c_{b_1}=(0,1,1)$ and
+$c_{b_2},c_{b_3}\in\{(1,0,2),(1,2,0)\}$. The row sums $(2,3,3)$ of $R$ force these two columns to be
+different. Swapping $b_2,b_3$ preserves $Q$, so $R=T_{112}$.
+
+\emph{$P=Q=T_{113}$.} Here $\alpha_{b_1}\in\{64,52,40\}$ (column sum $2$) and
+$\alpha_{b_2},\alpha_{b_3}\in\{28,16,4\}$ (column sum $4$). For the pair $(b_2,b_3)$ the square products
+$16\cdot16$, $4\cdot4$, $16\cdot4$ and $28\cdot28$ require $\alpha_{b_1}=64,16,36,112$. For a pair
+$(b_1,b_j)$ the square products $64\cdot16$ and $64\cdot4$ require $144$ and $100$. Only
+$\sqrt{16}+\sqrt{16}=\sqrt{64}$ is realized. So $c_{b_1}=(0,1,1)$ and $c_{b_2},c_{b_3}\in\{(1,1,2),(1,2,1)\}$. The row sums
+$(2,4,4)$ make them different, which gives the stated $R$ up to swapping $b_2,b_3$.
+
+\emph{$P=T_{113}$, $Q=T_{122}$.} $Q$ has row sums $(3,3,4)$, so $\alpha_{b_1},\alpha_{b_2}\in\{61,37,13\}$
+and $\alpha_{b_3}\in\{28,16,4\}$. Since $61,37,13$ are squarefree and pairwise coprime, the only square
+products are $61^2,37^2,13^2$ for the pair $(b_1,b_2)$. These would require $\alpha_{b_3}=244,148,52$. No
+product $\alpha_{b_j}\alpha_{b_3}$ with $j\le2$ is a square. No $R$ exists. Exchanging the roles of $\cA$
+and $\cB$ (that is, replacing $u$ by $-u$, which preserves \eqref{eq:C1}--\eqref{eq:C2}) disposes of
+$P=T_{122}$, $Q=T_{113}$.
+
+\emph{$P=Q=T_{122}$.} The columns have sums $3,3,4$, so $\alpha_{b_1},\alpha_{b_2}\in\{62,38,32,8\}$ and
+$\alpha_{b_3}\in\{32,14,8\}$. The only square products between different columns are $8\cdot8$,
+$8\cdot32$ and $32\cdot32$, which require $32$, $72$ and $128$ at the remaining column. So the only valid
+identity is $\sqrt8+\sqrt8=\sqrt{32}$. If the $32$ sits at $b_3$, then $c_{b_3}=(1,1,2)$ and
+$c_{b_1},c_{b_2}\in\{(1,2,0),(2,1,0)\}$, so row $a_3$ of $R$ sums to $2\ne4$. So the $32$ sits at $b_1$ or
+$b_2$; by the symmetry $b_1\leftrightarrow b_2$ of $Q$, say at $b_1$. Then
+$c_{b_1}\in\{(0,1,2),(1,0,2)\}$, $c_{b_2}\in\{(1,2,0),(2,1,0)\}$ and $c_{b_3}\in\{(0,2,2),(2,0,2)\}$. The row
+sums $(3,3,4)$ leave exactly $R=\left(\begin{smallmatrix}0&1&2\\1&2&0\\2&0&2\end{smallmatrix}\right)$ and
+$\left(\begin{smallmatrix}1&2&0\\0&1&2\\2&0&2\end{smallmatrix}\right)$. The swap $a_1\leftrightarrow a_2$
+(a symmetry of $P$) exchanges them.
+\end{proof}
+
+\begin{theorem}[the six configurations]\label{thm:six}
+Up to relabelling $\cA$ and $\cB$ (and exchanging $\cA$ with $\cB$), the $6\times6$ block of $C$ on
+$\cA\cup\cB$ is one of the following. In every case $Q=P$ and $R=R^{\mathsf T}$.
+\begin{center}
+\renewcommand{\arraystretch}{2.1}
+\begin{tabular}{@{}cccc@{}}
+\toprule
+case & $h$ & $P=Q$ & $R$\\
+\midrule
+1 & 3 & $T_{111}$ & $2I$\\
+2 & 3 & $T_{111}$ & $\left(\begin{smallmatrix}2&0&0\\0&1&1\\0&1&1\end{smallmatrix}\right)$\\
+3 & 3 & $T_{111}$ & $T_{111}$\\
+4 & 4 & $T_{112}$ & $T_{112}$\\
+5 & 5 & $T_{113}$ & $\left(\begin{smallmatrix}0&1&1\\1&1&2\\1&2&1\end{smallmatrix}\right)$\\
+6 & 5 & $T_{122}$ & $\left(\begin{smallmatrix}0&1&2\\1&2&0\\2&0&2\end{smallmatrix}\right)$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{theorem}
+
+\section{The mixed orbits}\label{sec:mixed}
+
+In each case of \cref{thm:six} put $w_i=v_{a_i}-v_{b_i}$ and $s_i=v_{a_i}+v_{b_i}$ ($i=1,2,3$).
+
+\begin{lemma}\label{lem:split}
+$w_i\cdot s_j=0$ for all $i,j$. If $\mathsf W=\langle w_i\rangle$ and $\mathsf S=\langle s_i\rangle$, then
+$\R^4=\mathsf W\oplus\mathsf S$ is an orthogonal decomposition. The Gram matrices are
+\[
+G^{w}=2\bigl(3P-3R+12I-4J\bigr),\qquad G^{s}=2\bigl(3P+3R+12I-8J\bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+$w_i\cdot s_j=(v_{a_i}\cdot v_{a_j}-v_{b_i}\cdot v_{b_j})+(v_{a_i}\cdot v_{b_j}-v_{b_i}\cdot v_{a_j})$.
+The first bracket vanishes because $Q=P$, the second because $R=R^{\mathsf T}$. The Gram matrices follow
+from \eqref{eq:ip}. Since $v_{a_i}=\frac12(s_i+w_i)$ and $v_{b_i}=\frac12(s_i-w_i)$, we get
+$\mathsf W+\mathsf S\supseteq\langle v_a,v_b\rangle$. One checks $\rk G^w+\rk G^s=4$ in each case (see
+below), so $\mathsf W\oplus\mathsf S=\R^4$.
+\end{proof}
+
+Let $m\in\cM$ and write $x_i=C_{ma_i}$, $y_i=C_{mb_i}$ (integers in $[0,4]$), $d_i=x_i-y_i$,
+$n_i=x_i+y_i$ and $e_i=3n_i-8$. By \eqref{eq:ip},
+\begin{equation}\label{eq:mixedip}
+v_m\cdot w_i=3d_i,\qquad v_m\cdot s_i=e_i,\qquad |v_m|^2=8=|\pi_{\mathsf W}v_m|^2+|\pi_{\mathsf S}v_m|^2 .
+\end{equation}
+Row $m$ of \eqref{eq:Cu} gives $\sum_id_i=0$. Note $d_i\equiv n_i\pmod 2$, $|d_i|\le n_i$, and
+$e_i\equiv1\pmod 3$. For three vectors $f_1,f_2,f_3$ spanning a plane with Gram matrix $c(3I-J)$ (a
+``triangle frame''), every $z$ in the plane satisfies $|z|^2=\frac1{3c}\sum_i(z\cdot f_i)^2$.
+
+\subsection*{Case 1} $G^w=2(3I-J)$ and $G^s=10(3I-J)$ are triangle frames. In \eqref{eq:mixedip} this
+gives $\frac32\sum d_i^2+\frac1{30}\sum e_i^2=8$. Since $h=3$, $\sum s_i=0$, so $\sum e_i=0$; put
+$e_i=3k_i+1$ with $\sum k_i=-1$ and $k_i=n_i-3\ge-3$. Then $\sum e_i^2=9\sum k_i^2-3$ and
+\[
+5\textstyle\sum d_i^2+\sum k_i^2=27,\qquad k_i\equiv d_i+1\pmod2.
+\]
+As $\sum d_i=0$, either all $d_i$ are even or exactly two are odd. If all are even, then $\sum d_i^2\in\{0,8,\dots\}$
+forces $d=0$ and $\sum k_i^2=27$ with all $k_i$ odd. That means $\{25,1,1\}$ or $\{9,9,9\}$, and neither
+allows $\sum k_i=-1$ with $k_i\ge-3$. Otherwise $\sum d_i^2=2$, so $d$ is a permutation of $(0,1,-1)$ and
+$\sum k_i^2=17$, with $k_i$ odd exactly where $d_i=0$. The only possibility with $\sum k=-1$ is
+$k=(3,-2,-2)$ in that pattern. Hence $n=(6,1,1)$ up to order, and
+\[
+(x;y)\in\{(3,1,0;3,0,1),\ (3,0,1;3,1,0)\}\quad\text{up to a common permutation of the indices.}
+\]
+In particular $C_{ma_1}\in\{0,1,3\}$.
+
+\subsection*{Case 2} $\mathsf W$ has the orthogonal basis $w_1,\ w_2-w_3$ (norms $4,36$), and $\mathsf S$
+has the orthogonal basis $s_1,\ s_2-s_3$ (norms $20,36$). So
+$\frac94d_1^2+\frac14(d_2-d_3)^2+\frac1{20}e_1^2+\frac14(n_2-n_3)^2=8$, i.e.
+\[
+45d_1^2+5(d_2-d_3)^2+e_1^2+5(n_2-n_3)^2=160 .
+\]
+So $5\mid e_1$, hence $n_1\in\{1,6\}$; also $\sum n_i=8$ (\cref{prop:h3}). If $n_1=6$ then $|d_1|\le2$ is even
+and $45d_1^2\le 60$ gives $d_1=0$. Then $(d_2-d_3)^2+(n_2-n_3)^2=12$ with $n_2+n_3=2$, but the left side
+is at most $8$. If $n_1=1$ then $d_1=\pm1$ and $(d_2-d_3)^2+(n_2-n_3)^2=18$ with $n_2+n_3=7$. Both terms
+are odd squares, so both equal $9$. Solving, with the parity constraints, gives
+\[
+(x;y)\in\{(1,3,0;0,2,2),\ (1,0,3;0,2,2),\ (0,2,2;1,3,0),\ (0,2,2;1,0,3)\},
+\]
+so $C_{ma_1}\in\{0,1\}$.
+
+\subsection*{Case 3} $G^w=8(3I-J)$ and $G^s=4(3I-J)$ are triangle frames:
+$\frac38\sum d_i^2+\frac1{12}\sum e_i^2=8$. With $e_i=3k_i+1$ and $\sum k_i=-1$ as in Case 1,
+\[
+\textstyle\sum d_i^2+2\sum k_i^2=22 .
+\]
+If exactly two $d_i$ are odd, then $\sum d_i^2\equiv2$ and $2\sum k_i^2\equiv2\pmod4$, so the left side
+is $\equiv0\pmod 4$, a contradiction. So all $d_i$ are even and all $k_i$ odd. Then $\sum d_i^2\in\{0,8\}$
+and $\sum k_i^2\in\{11,7\}$; sums of three odd squares are $3,11,19,\dots$, so $d=0$ and
+$\{k_i^2\}=\{9,1,1\}$, $k=(-3,1,1)$ up to order. Thus $x=y$ is a permutation of $(0,2,2)$, and
+$C_{ma_1}\in\{0,2\}$.
+
+\subsection*{Case 4} $G^w=8(3I-J)$. In $G^s$ we have $s_2=s_3$ (since $|s_2-s_3|^2=0$), so $n_2=n_3$, and
+$s_1,\ s_1+2s_2$ is an orthogonal basis of $\mathsf S$ (norms $8,24$). Also
+$v_m\cdot(s_1+2s_2)=\sum e_i=6\sigma-24$ with $\sigma=\sum x_i=\sum y_i$. Hence
+\[
+3\textstyle\sum d_i^2+e_1^2+12(\sigma-4)^2=64 .
+\]
+From $n_2=n_3$ we get $d_2\equiv d_3$, so $d_1=-(d_2+d_3)$ and $n_1$ are even. Thus $n_1\in\{0,2,4\}$, since
+$e_1^2\le64$. Note $\sum d_i^2\in\{0,8,24,\dots\}$ when all $d_i$ are even, and $\in\{2,6,14,\dots\}$
+otherwise.
+\begin{itemize}[leftmargin=2em]
+\item $n_1=0$: $d=0$ and $\sigma=4$, so $x=y=(0,2,2)$.
+\item $n_1=2$: $\sum d_i^2+4(\sigma-4)^2=20$ needs $\sum d_i^2\equiv0\pmod4$, so $\sum d_i^2\in\{0,8\}$ and
+$(\sigma-4)^2\in\{5,3\}$, which is impossible.
+\item $n_1=4$: $\sum d_i^2+4(\sigma-4)^2=16$ gives $d=0$ and $\sigma\in\{2,6\}$, so $x=y\in\{(2,0,0),(2,2,2)\}$.
+\end{itemize}
+So $C_{ma_1}\in\{0,2\}$.
+
+\subsection*{Case 5} $\mathsf W$ has the orthogonal basis $w_1,\ w_2-w_3$ (norms $16,24$). In $\mathsf S$,
+$s_2=s_3$ (so $n_2=n_3$), and $s_1,\ s_1+2s_2$ is an orthogonal basis (norms $8,48$). With $\sigma$ as in
+Case 4,
+\[
+9d_1^2+6(d_2-d_3)^2+2e_1^2+12(\sigma-4)^2=128 .
+\]
+Again $d_1$ and $n_1$ are even, and $2e_1^2\le128$ forces $n_1\in\{0,2,4\}$. Here $d_2-d_3$ is even.
+\begin{itemize}[leftmargin=2em]
+\item $n_1=0$: $d=0$ and $\sigma=4$, so $x=y=(0,2,2)$.
+\item $n_1=2$: $3d_1^2+2(d_2-d_3)^2+4(\sigma-4)^2=40$ with $d_1\in\{0,\pm2\}$ and $(d_2-d_3)^2\in\{0,4,16\}$. No
+case gives a square $(\sigma-4)^2$.
+\item $n_1=4$: $3d_1^2+2(d_2-d_3)^2+4(\sigma-4)^2=32$. The only solution is $d_1=0$, $d_2-d_3=\pm4$,
+$\sigma=4$, which gives $(x;y)\in\{(2,2,0;2,0,2),(2,0,2;2,2,0)\}$.
+\end{itemize}
+So $C_{ma_1}\in\{0,2\}$.
+
+\subsection*{Case 6} $G^w$ has rank $1$: $w_2=w_3=-\frac12w_1$ and $|w_1|^2=16$. So $d_2=d_3=-d_1/2$ and
+$|\pi_{\mathsf W}v_m|^2=\frac9{16}d_1^2$. $G^s$ has rank $3$, with orthogonal basis $s_1,\ 2s_2+s_1,\ s_3-s_1$
+(norms $8,72,12$). Hence
+\[
+9d_1^2+2(3n_1-8)^2+2(n_1+2n_2-8)^2+12(n_3-n_1)^2=128 .
+\]
+Here $d_1$ is even and $|d_1|\le 2$, since $9\cdot16>128$.
+\begin{itemize}[leftmargin=2em]
+\item $d_1=0$: then $x=y$, $n=2x$, and the equation becomes $(3x_1-4)^2+(x_1+2x_2-4)^2+6(x_3-x_1)^2=16$.
+So $x_1\le2$. The case $x_1=0$ gives $x=(0,2,0)$. The case $x_1=1$ needs $(2x_2-3)^2=9$ and $(x_3-1)^2=1$,
+giving $x\in\{(1,0,0),(1,0,2),(1,3,0),(1,3,2)\}$. The case $x_1=2$ needs $2(x_2-1)^2+3(x_3-2)^2=6$, which
+is impossible.
+\item $d_1=\pm2$: then $n_1$ is even, $n_2,n_3$ are odd, and
+$(3n_1-8)^2+(n_1+2n_2-8)^2+6(n_3-n_1)^2=46$ with $n_3-n_1$ odd and $n_1\in\{2,4\}$. For $n_1=2$ it forces
+$(2n_2-6)^2=36$, so $n_2$ is even, a contradiction. For $n_1=4$ it forces $(2n_2-4)^2=24$, which is
+impossible.
+\end{itemize}
+So $x=y$ and $C_{ma_1}\in\{0,1\}$.
+
+\subsection*{Conclusion}
+Now look at row $a_1$ of $C$ restricted to the six mixed columns. By \eqref{eq:rows}, its entries sum to
+$12-2\sigma_{a_1}$, and their squares sum to $22-\sum_{j\in\cA\cup\cB}C_{a_1j}^2$:
+\begin{center}
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+case & possible $C_{a_1m}$ & $\sum_m C_{a_1m}$ & $\sum_mC_{a_1m}^2$ & contradiction\\
+\midrule
+1 & $\{0,1,3\}$ & $8$ & $16$ & $n_1+3n_3=8$, $n_1+9n_3=16$ $\Rightarrow$ $6n_3=8$\\
+2 & $\{0,1\}$ & $8$ & $16$ & six entries in $\{0,1\}$ sum to at most $6$\\
+3 & $\{0,2\}$ & $8$ & $18$ & $c^2=2c$ forces square-sum $16$\\
+4 & $\{0,2\}$ & $8$ & $18$ & same\\
+5 & $\{0,2\}$ & $8$ & $18$ & same\\
+6 & $\{0,1\}$ & $6$ & $12$ & $c^2=c$ forces square-sum $6$\\
+\bottomrule
+\end{tabular}
+\end{center}
+(In case 1, $n_1,n_3$ count the entries equal to $1$ and $3$.) Every case is contradictory, so no matrix
+$C$ as in \cref{prop:C,prop:zerodiag} exists. This proves \cref{thm:main}. \qed
+
+\begin{remark}
+The final step needs only the values $C_{ma_1}$. The full lists of mixed vectors (six, four, three, three,
+three and five of them) are recorded because they are used in the formal proof.
+\end{remark}
+
+\section{Independent verification and formalization}\label{sec:verif}
+
+The scripts are in \texttt{scripts/} of the repository \url{https://github.com/amazing-source/conway-C7}. All of them use exact arithmetic.
+\begin{itemize}[leftmargin=2em]
+\item \texttt{census6.py} enumerates all $6\times6$ blocks with entries in $[0,4]$ that satisfy
+\eqref{eq:margins}, row feasibility, and positive semidefiniteness of rank $\le4$ of the Gram block. It
+finds $8$ classes, and exactly the six of \cref{thm:six} once $h\le5$ is imposed.
+\item \texttt{mixed6b.py} recomputes the mixed vectors of \cref{sec:mixed} by testing all
+$x\in[0,4]^6$ against the full $7\times7$ Gram condition (positive semidefinite of rank $4$), together
+with the contradictions of the final table. \texttt{residuals.py} reproduces the tables of
+\cref{sec:block}.
+\item \texttt{fullsearch.c} is a brute-force search with no Gram reasoning, over all symmetric
+$12\times12$ matrices with entries in $[0,4]$ satisfying \eqref{eq:C1}--\eqref{eq:C2}. With zero diagonal
+it finds no solution (about $8\cdot10^9$ nodes). It also finds none for each of the nine diagonal patterns
+with $C_{ii}\in\{0,2\}$ and $\tr C=14$, the only other traces compatible with \cref{lem:specC} and the local
+structure. This suggests that the representation-theoretic step could be avoided; it is not needed for the
+proof.
+\end{itemize}
+
+\noindent\textbf{Lean.} A Lean~4/Mathlib formalization is in \texttt{lean/}. Its status is described in
+\texttt{lean/README.md}. The general algebra is formalized with no \texttt{sorry}: $G^2=21G$,
+positivity, and the trace-zero rank-$4$ factorization $D\,G=G_{\cdot,S}\operatorname{adj}(G_S)G_{S,\cdot}$.
+The case analysis is generated together with its certificates, and its full compilation is in
+progress.
+
+\begin{thebibliography}{9}
+\bibitem{BL} M.~Behbahani and C.~Lam, \emph{Strongly regular graphs with non-trivial automorphisms},
+Discrete Math.\ \textbf{311} (2011), 132--144.
+\bibitem{BvM} A.~E.~Brouwer and H.~Van Maldeghem, \emph{Strongly Regular Graphs}, Cambridge University
+Press, 2022.
+\bibitem{CW} P.~G.~Cesarz and A.~J.~Woldar, \emph{On the automorphism group of a putative Conway
+$99$-graph}, Algebr.\ Comb.\ \textbf{8} (2025), no.~2, 379--398; arXiv:2308.02978.
+\bibitem{Conway} J.~H.~Conway, \emph{Five \$1{,}000 problems (update 2017)}, On-Line Encyclopedia of
+Integer Sequences.
+\end{thebibliography}
+
+\end{document}

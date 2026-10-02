@@ -1,0 +1,14 @@
+import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Algebra.Order.Chebyshev
+import Mathlib.Data.Matrix.Mul
+import Mathlib.LinearAlgebra.Matrix.Trace
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.IntervalCases
+import Mathlib.Tactic.FinCases
+import Mathlib.Tactic.Ring
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Module
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Abel
+import Mathlib.Tactic.NoncommRing
