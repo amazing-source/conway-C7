@@ -38,12 +38,13 @@
 \DeclareMathOperator{\Aut}{Aut}
 \DeclareMathOperator{\srg}{srg}
 \crefname{equation}{}{}
+\raggedbottom
 
 \title[No automorphism of order seven in a Conway 99-graph]{A computer-free proof that a Conway $99$-graph\\ has no automorphism of order seven}
 
-\author{Dilan Djematene}
-% \address{...}
-% \email{...}
+\author[ChatGPT and Claude, directed by D.~Djematene]{ChatGPT (OpenAI) and Claude (Opus~5.5, Anthropic)\\[2pt]
+directed by Dilan Djematene}
+\thanks{Correspondence: Dilan Djematene, \href{mailto:dilandjematene@gmail.com}{\texttt{dilandjematene@gmail.com}}.}
 
 \date{October 2026}
 
@@ -889,13 +890,15 @@ adjugates and $D=\det G_S>0$. The resulting finite statements, which concern $29
 are checked by Lean's kernel. The formal proof thus confirms the conclusions of \cref{thm:six} and of
 \cref{sec:mixed} independently of the computations by hand given in the text.
 
-\subsection*{Acknowledgements and use of AI tools}
-The author thanks the authors of~\cite{CW25}, whose framework and notation this paper follows. The strategy
-of the proof (the zero-diagonal step, the rank-$4$ Gram compression and the case analysis on the $LL/RR$ block)
-first appeared in a candidate argument produced with the assistance of an AI system (ChatGPT, OpenAI). The
-argument was then audited, completed and rewritten with all finite steps done by hand, with the assistance of
-another AI system (Claude, Anthropic), which was also used for the exact-arithmetic checks and the formal
-verification described above. The author takes full responsibility for the content of the paper.
+\subsection*{Authorship}
+This paper was written by two AI systems, under the direction of Dilan Djematene. ChatGPT (OpenAI) produced the
+first candidate argument, which contains the strategy of the proof: the zero-diagonal step, the rank-$4$ Gram
+compression and the case analysis on the $LL/RR$ block. Claude (Opus~5.5, Anthropic) audited that argument,
+completed it, wrote out every finite step by hand, wrote the manuscript, ran the exact-arithmetic checks and wrote
+the Lean formalization. Dilan Djematene directed the work and is the contact for this paper.
+
+\subsection*{Acknowledgements}
+We thank the authors of~\cite{CW25}, whose framework and notation this paper follows.
 
 %======================================================================
 \appendix
